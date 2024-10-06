@@ -1,0 +1,41 @@
+﻿@page "/calculator"
+
+@using DcaCalculator.WebUI.Data
+@inject UserSelectionService UserSelectionService
+
+<h3>Calculator</h3>
+Selected Coins for DCA: @UserSelectionService.Property
+
+<div class="form-group w-25">
+    <div class="row mb-2">
+        <div class="col">
+            <h3>Start date</h3>
+            <input type="date" class="form-control" @bind="startDate" />
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col">
+            <h3>Monthly Investment</h3>
+            <input type="number" class="form-control" placeholder="Amount Invested" @bind="investment" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <button class="btn btn-success" @onclick="CalculateDCA">Calculate DCA</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private DateTime startDate;
+    private double investment;
+    protected override void OnInitialized()
+    {
+        startDate = DateTime.Now;
+    }
+
+    public void CalculateDCA()
+    {
+
+    }
+}

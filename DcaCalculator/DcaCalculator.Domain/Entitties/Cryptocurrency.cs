@@ -6,6 +6,6 @@ namespace DcaCalculator.Domain.Entitties
     {
         public string Name { get; set; }
         public string Symbol { get; set; }
-        public decimal Value { get; set; }
+        public double Value { get; set; }
     }
 }

@@ -21,7 +21,7 @@ internal class Program
         });
         builder.Services.AddRazorPages();
         builder.Services.AddServerSideBlazor();
-        builder.Services.AddSingleton<WeatherForecastService>();
+        builder.Services.AddScoped<UserSelectionService>();
 
         var app = builder.Build();
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DcaCalculator.Application.Features.Queries.GetAllCryptocurrencies;
 using System.Reflection;
 
 namespace DcaCalculator.Application.Common.Mappings
@@ -8,6 +9,11 @@ namespace DcaCalculator.Application.Common.Mappings
         public MappingProfile()
         {
             ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+            CreateMap<Datum, GetAllCryptocurrenciesDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Symbol, opt => opt.MapFrom(src => src.Symbol))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.LastUpdated))
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Quote.USD.Price));
         }
 
         private void ApplyMappingsFromAssembly(Assembly assembly)

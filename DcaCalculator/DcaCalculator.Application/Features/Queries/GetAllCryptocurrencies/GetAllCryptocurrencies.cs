@@ -5,6 +5,7 @@ using DcaCalculator.Application.Interfaces.Repositories;
 using DcaCalculator.Domain.Entitties;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace DcaCalculator.Application.Features.Queries.GetAllCryptocurrencies
 {
@@ -28,7 +29,7 @@ namespace DcaCalculator.Application.Features.Queries.GetAllCryptocurrencies
 
         public async Task<List<GetAllCryptocurrenciesDto>> Handle(GetAllCryptocurrenciesQuery query, CancellationToken cancellationToken)
         {
-            var availableCryptocurrencies = 
+            var availableCryptocurrencies =
              await _unitOfWork.Repository<Cryptocurrency>().Entities
                    .ProjectTo<GetAllCryptocurrenciesDto>(_mapper.ConfigurationProvider)
                    .ToListAsync(cancellationToken);
@@ -38,7 +39,25 @@ namespace DcaCalculator.Application.Features.Queries.GetAllCryptocurrencies
                 return availableCryptocurrencies;
             }
 
-            var latestQuotes = await _coinmarketCapClient.GetLatestQuotes();
+            var latestQuotesResponse = await _coinmarketCapClient.GetLatestQuotes();
+            var latestQuotes = JsonConvert.DeserializeObject<LatestQuotesResponse>(latestQuotesResponse);
+            if (latestQuotes != null && latestQuotes.Data.Any())
+            {
+                foreach (var item in latestQuotes.Data)
+                {
+                    item.LastUpdated = DateTime.Now;
+                    await _unitOfWork.Repository<Cryptocurrency>().AddAsync(new Cryptocurrency()
+                    {
+                        Name = item.Name,
+                        Symbol = item.Symbol,
+                        CreatedDate = item.DateAdded,
+                        UpdatedDate = item.LastUpdated,
+                        Value = item.Quote.USD.Price
+                    });
+                }
+
+                availableCryptocurrencies = _mapper.Map<List<GetAllCryptocurrenciesDto>>(latestQuotes.Data);
+            }
 
             return availableCryptocurrencies;
         }

@@ -8,7 +8,7 @@ namespace DcaCalculator.Application.Features.Queries.GetAllCryptocurrencies
         public int Id { get; init; }
         public string Name { get; set; }
         public string Symbol { get; set; }
-        public decimal Value { get; set; }
+        public double Value { get; set; }
         public DateTime? CreatedDate { get; set; }
     }
 }

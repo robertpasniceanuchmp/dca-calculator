@@ -1,7 +1,9 @@
 ﻿@page "/cryptocurrencies"
+@using DcaCalculator.WebUI.Data
 @using MediatR
 @using Application.Features.Queries.GetAllCryptocurrencies;
 @inject IMediator Mediator
+@inject UserSelectionService UserSelectionService
 
 <PageTitle>Cryptocurrencies</PageTitle>
 
@@ -13,23 +15,36 @@
 }
 else
 {
+    <p>Selected cryptocurrencies for DCA Calculator: @UserSelectionService.Property</p>
+    <p><a href="/calculator">Go to DCA Calculator</a></p>
     <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Symbol</th>
                 <th>Value</th>
-                <th>Date</th>
+                <th>Updated date</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var stadium in cryptocurrencies)
+            @foreach (var crypto in cryptocurrencies)
             {
                 <tr>
-                    <td>@stadium.Name</td>
-                    <td>@stadium.Symbol</td>
-                    <td>@stadium.Value</td>
-                    <td>@stadium.CreatedDate.Value.ToString("MM/DD/YYYY")</td>
+                    <td>@crypto.Name</td>
+                    <td>@crypto.Symbol</td>
+                    <td>@crypto.Value.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
+                    <td>@crypto.CreatedDate.Value.ToString("MM/dd/yyyy")</td>
+                    <td>
+                        @if (!UserSelectionService.Property.Contains(crypto.Symbol))
+                        {
+                            <a @onclick="()=> SelectItem(crypto.Symbol)">Add to DCA Calculator</a>
+                        }
+                        else
+                        {
+                            <a @onclick="()=> RemoveItem(crypto.Symbol)">Remove from DCA Calculator</a>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
@@ -42,5 +57,22 @@ else
     protected override async Task OnInitializedAsync()
     {
         cryptocurrencies = await Mediator.Send(new GetAllCryptocurrenciesQuery());
+    }
+
+    private void SelectItem(string symbol)
+    {
+        UserSelectionService.Property +=
+            $",{symbol}";
+    }
+
+    private void RemoveItem(string symbol)
+    {
+        if(UserSelectionService.Property.Contains(",")){
+            UserSelectionService.Property = UserSelectionService.Property.Replace($",{symbol}", string.Empty);
+        }
+        else
+        {
+            UserSelectionService.Property = UserSelectionService.Property.Replace($"{symbol}", string.Empty);
+        }
     }
 }
