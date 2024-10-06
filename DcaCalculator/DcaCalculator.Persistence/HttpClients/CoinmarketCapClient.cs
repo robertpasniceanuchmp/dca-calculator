@@ -12,14 +12,18 @@ namespace DcaCalculator.Persistence.HttpClients
             _httpClient = httpClient;
         }
 
-        public Task<dynamic> GetHistoricalQuotes(string symbol, string interval)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<string> GetLatestQuotes()
         {
             var response = await _httpClient.GetAsync("/v1/cryptocurrency/listings/latest");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            return content;
+        }
+
+        public async Task<string> GetHistoricalQuotes(string symbols, string startDate)
+        {
+            var response = await _httpClient.GetAsync($"/v2/cryptocurrency/quotes/historical?symbol={symbols}&interval=30d");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

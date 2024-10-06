@@ -1,7 +1,11 @@
 ﻿@page "/calculator"
 
+@using DcaCalculator.Application.Features.Queries.GetDcaResults
 @using DcaCalculator.WebUI.Data
+@using MediatR
 @inject UserSelectionService UserSelectionService
+@inject IMediator Mediator
+
 
 <h3>Calculator</h3>
 Selected Coins for DCA: @UserSelectionService.Property
@@ -21,21 +25,50 @@ Selected Coins for DCA: @UserSelectionService.Property
     </div>
     <div class="row mb-3">
         <div class="col">
-            <button class="btn btn-success" @onclick="CalculateDCA">Calculate DCA</button>
+            <button class="btn btn-success" @onclick="Calculate">Calculate DCA</button>
         </div>
     </div>
+</div>
+<div class="w-50">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Investment amount</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var crypto in cryptocurrencies)
+            {
+                <tr>
+                    <td>@crypto.Date</td>
+                    <td>@crypto.InvestedAmount</td>
+                    <td>
+                        @foreach (var coin in crypto.InvestedCoins)
+                        {
+                            string.Format("{0} - {1}", @coin.Key, @coin.Value);
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 @code {
     private DateTime startDate;
     private double investment;
+    private List<GetDcaResultsDto> cryptocurrencies;
+
     protected override void OnInitialized()
     {
         startDate = DateTime.Now;
+        cryptocurrencies = new List<GetDcaResultsDto>();
     }
 
-    public void CalculateDCA()
+    public async Task Calculate()
     {
-
+        cryptocurrencies = await Mediator.Send(new GetDcaResultsQuery(startDate, investment, UserSelectionService.Property));
     }
 }

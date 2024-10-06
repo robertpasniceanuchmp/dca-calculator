@@ -2,7 +2,7 @@
 {
     public interface ICoinmarketCapClient
     {
-        Task<dynamic> GetHistoricalQuotes(string symbol, string interval);
+        Task<string> GetHistoricalQuotes(string symbol, string startDate);
         Task<string> GetLatestQuotes();
     }
 }

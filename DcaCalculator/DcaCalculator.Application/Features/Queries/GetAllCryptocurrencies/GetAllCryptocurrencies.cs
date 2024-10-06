@@ -27,7 +27,9 @@ namespace DcaCalculator.Application.Features.Queries.GetAllCryptocurrencies
             _coinmarketCapClient = coinmarketCapClient;
         }
 
-        public async Task<List<GetAllCryptocurrenciesDto>> Handle(GetAllCryptocurrenciesQuery query, CancellationToken cancellationToken)
+        public async Task<List<GetAllCryptocurrenciesDto>> Handle(
+            GetAllCryptocurrenciesQuery query, 
+            CancellationToken cancellationToken)
         {
             var availableCryptocurrencies =
              await _unitOfWork.Repository<Cryptocurrency>().Entities
@@ -55,6 +57,8 @@ namespace DcaCalculator.Application.Features.Queries.GetAllCryptocurrencies
                         Value = item.Quote.USD.Price
                     });
                 }
+
+                await _unitOfWork.Save(cancellationToken);
 
                 availableCryptocurrencies = _mapper.Map<List<GetAllCryptocurrenciesDto>>(latestQuotes.Data);
             }

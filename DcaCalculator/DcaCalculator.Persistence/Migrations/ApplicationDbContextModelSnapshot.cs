@@ -49,7 +49,7 @@ namespace DcaCalculator.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cryptocurrencies");
+                    b.ToTable("Cryptocurrencies", (string)null);
                 });
 #pragma warning restore 612, 618
         }
