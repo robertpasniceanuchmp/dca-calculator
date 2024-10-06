@@ -1,0 +1,46 @@
+﻿@page "/cryptocurrencies"
+@using MediatR
+@using Application.Features.Queries.GetAllCryptocurrencies;
+@inject IMediator Mediator
+
+<PageTitle>Cryptocurrencies</PageTitle>
+
+<h1>Cryptocurrencies</h1>
+
+@if (cryptocurrencies == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Symbol</th>
+                <th>Value</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var stadium in cryptocurrencies)
+            {
+                <tr>
+                    <td>@stadium.Name</td>
+                    <td>@stadium.Symbol</td>
+                    <td>@stadium.Value</td>
+                    <td>@stadium.CreatedDate.Value.ToString("MM/DD/YYYY")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<GetAllCryptocurrenciesDto>? cryptocurrencies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cryptocurrencies = await Mediator.Send(new GetAllCryptocurrenciesQuery());
+    }
+}
