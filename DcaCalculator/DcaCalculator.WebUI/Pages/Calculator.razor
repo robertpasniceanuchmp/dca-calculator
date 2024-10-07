@@ -35,12 +35,12 @@ Selected Coins for DCA: @UserSelectionService.Symbols
         <h3>Results</h3>
         @foreach(var coin in resultsQuery.Total.AcumulatedCoins)
         {
-            <p>@coin.Key - @coin.Value.Amount - USD - @coin.Value.UsdAmount</p>
+            <p>@coin.Key - @coin.Value.Amount.ToString("N9") - USD - @coin.Value.UsdAmount.ToString("C", new System.Globalization.CultureInfo("en-US"))</p>
         }
 
         <p>Invested Amount: @resultsQuery.Total.InvestedAmount.ToString("C", new System.Globalization.CultureInfo("en-US"))</p>
         <p>Current Value: @resultsQuery.Total.UsdValue.ToString("C", new System.Globalization.CultureInfo("en-US"))</p>
-        <p>ROI: @resultsQuery.Total.ROI %</p>
+        <p>ROI: @resultsQuery.Total.ROI.ToString("N9") %</p>
     }
 </div>
 <div class="w-50">
@@ -65,7 +65,7 @@ Selected Coins for DCA: @UserSelectionService.Symbols
                         <td>@crypto.InvestedCoin.Symbol</td>
                         <td>@crypto.Price.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
                         <td>
-                            @crypto.InvestedCoin.Amount
+                            @crypto.InvestedCoin.Amount.ToString("N9")
                         </td>
                     </tr>
                 }
