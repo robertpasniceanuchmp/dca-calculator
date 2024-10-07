@@ -54,7 +54,8 @@ namespace DcaCalculator.Application.Features.Queries.GetAllCryptocurrencies
                         Symbol = item.Symbol,
                         CreatedDate = item.DateAdded,
                         UpdatedDate = item.LastUpdated,
-                        Value = item.Quote.USD.Price
+                        Value = item.Quote.USD.Price,
+                        CoinmarketCapId = item.Id
                     });
                 }
 

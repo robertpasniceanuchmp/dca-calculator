@@ -7,5 +7,6 @@ namespace DcaCalculator.Domain.Entitties
         public string Name { get; set; }
         public string Symbol { get; set; }
         public double Value { get; set; }
+        public long CoinmarketCapId { get; set; }
     }
 }

@@ -2,14 +2,24 @@
 {
     public class UserSelectionService
     {
-        private string? savedString;
+        private string? symbols;
+        private string? identifiers;
 
-        public string Property
+        public string Symbols
         {
-            get => savedString ?? string.Empty;
+            get => symbols ?? string.Empty;
             set
             {
-                savedString = string.IsNullOrEmpty(savedString) ? value.Replace(",", string.Empty) : $"{value}";
+                symbols = string.IsNullOrEmpty(symbols) ? value.Replace(",", string.Empty) : $"{value}";
+            }
+        }
+
+        public string Identifiers
+        {
+            get => identifiers ?? string.Empty;
+            set
+            {
+                identifiers = string.IsNullOrEmpty(identifiers) ? value.Replace(",", string.Empty) : $"{value}";
             }
         }
     }

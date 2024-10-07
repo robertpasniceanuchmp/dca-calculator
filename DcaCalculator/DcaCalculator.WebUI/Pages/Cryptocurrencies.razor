@@ -15,7 +15,7 @@
 }
 else
 {
-    <p>Selected cryptocurrencies for DCA Calculator: @UserSelectionService.Property</p>
+    <p>Selected cryptocurrencies for DCA Calculator: @UserSelectionService.Symbols</p>
     <p><a href="/calculator">Go to DCA Calculator</a></p>
     <table class="table">
         <thead>
@@ -36,13 +36,13 @@ else
                     <td>@crypto.Value.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
                     <td>@crypto.CreatedDate.Value.ToString("MM/dd/yyyy")</td>
                     <td>
-                        @if (!UserSelectionService.Property.Contains(crypto.Symbol))
+                        @if (!UserSelectionService.Symbols.Contains(crypto.Symbol))
                         {
-                            <a @onclick="()=> SelectItem(crypto.Symbol)">Add to DCA Calculator</a>
+                            <a @onclick="()=> SelectItem(crypto.Symbol, crypto.CoinmarketCapId)">Add to DCA Calculator</a>
                         }
                         else
                         {
-                            <a @onclick="()=> RemoveItem(crypto.Symbol)">Remove from DCA Calculator</a>
+                            <a @onclick="()=> RemoveItem(crypto.Symbol, crypto.CoinmarketCapId)">Remove from DCA Calculator</a>
                         }
                     </td>
                 </tr>
@@ -59,20 +59,31 @@ else
         cryptocurrencies = await Mediator.Send(new GetAllCryptocurrenciesQuery());
     }
 
-    private void SelectItem(string symbol)
+    private void SelectItem(string symbol, long coinmarketCapId)
     {
-        UserSelectionService.Property +=
+        UserSelectionService.Symbols +=
             $",{symbol}";
+        UserSelectionService.Identifiers += $",{coinmarketCapId}";
     }
 
-    private void RemoveItem(string symbol)
+    private void RemoveItem(string symbol, long coinmarketCapId)
     {
-        if(UserSelectionService.Property.Contains(",")){
-            UserSelectionService.Property = UserSelectionService.Property.Replace($",{symbol}", string.Empty);
+        if (UserSelectionService.Symbols.Contains(","))
+        {
+            UserSelectionService.Symbols = UserSelectionService.Symbols.Replace($",{symbol}", string.Empty);
         }
         else
         {
-            UserSelectionService.Property = UserSelectionService.Property.Replace($"{symbol}", string.Empty);
+            UserSelectionService.Symbols = UserSelectionService.Symbols.Replace($"{symbol}", string.Empty);
+        }
+
+        if (UserSelectionService.Identifiers.Contains(","))
+        {
+            UserSelectionService.Identifiers = UserSelectionService.Identifiers.Replace($",{symbol}", string.Empty);
+        }
+        else
+        {
+            UserSelectionService.Identifiers = UserSelectionService.Identifiers.Replace($"{symbol}", string.Empty);
         }
     }
 }

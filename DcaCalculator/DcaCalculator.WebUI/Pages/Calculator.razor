@@ -8,7 +8,7 @@
 
 
 <h3>Calculator</h3>
-Selected Coins for DCA: @UserSelectionService.Property
+Selected Coins for DCA: @UserSelectionService.Symbols
 
 <div class="form-group w-25">
     <div class="row mb-2">
@@ -30,27 +30,45 @@ Selected Coins for DCA: @UserSelectionService.Property
     </div>
 </div>
 <div class="w-50">
+    @if (resultsQuery != null)
+    {
+        <h3>Results</h3>
+        @foreach(var coin in resultsQuery.Total.AcumulatedCoins)
+        {
+            <p>@coin.Key - @coin.Value.Amount - USD - @coin.Value.UsdAmount</p>
+        }
+
+        <p>Invested Amount: @resultsQuery.Total.InvestedAmount.ToString("C", new System.Globalization.CultureInfo("en-US"))</p>
+        <p>Current Value: @resultsQuery.Total.UsdValue.ToString("C", new System.Globalization.CultureInfo("en-US"))</p>
+        <p>ROI: @resultsQuery.Total.ROI %</p>
+    }
+</div>
+<div class="w-50">
     <table class="table">
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Investment amount</th>
+                <th>Symbol</th>
+                <th>Price</th>
                 <th>Value</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var crypto in cryptocurrencies)
+            @if (resultsQuery != null)
             {
-                <tr>
-                    <td>@crypto.Date</td>
-                    <td>@crypto.InvestedAmount</td>
-                    <td>
-                        @foreach (var coin in crypto.InvestedCoins)
-                        {
-                            string.Format("{0} - {1}", @coin.Key, @coin.Value);
-                        }
-                    </td>
-                </tr>
+                @foreach (var crypto in cryptocurrencies)
+                {
+                    <tr>
+                        <td>@crypto.Date</td>
+                        <td>@crypto.InvestedAmount</td>
+                        <td>@crypto.InvestedCoin.Symbol</td>
+                        <td>@crypto.Price.ToString("C", new System.Globalization.CultureInfo("en-US"))</td>
+                        <td>
+                            @crypto.InvestedCoin.Amount
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
@@ -59,16 +77,18 @@ Selected Coins for DCA: @UserSelectionService.Property
 @code {
     private DateTime startDate;
     private double investment;
-    private List<GetDcaResultsDto> cryptocurrencies;
+    private List<DcaResultsDto> cryptocurrencies;
+    private GetDcaResultsDto resultsQuery;
 
     protected override void OnInitialized()
     {
         startDate = DateTime.Now;
-        cryptocurrencies = new List<GetDcaResultsDto>();
+        cryptocurrencies = new List<DcaResultsDto>();
     }
 
     public async Task Calculate()
     {
-        cryptocurrencies = await Mediator.Send(new GetDcaResultsQuery(startDate, investment, UserSelectionService.Property));
+        resultsQuery = await Mediator.Send(new GetDcaResultsQuery(startDate, investment, UserSelectionService.Identifiers));
+        cryptocurrencies = resultsQuery.Table;
     }
 }

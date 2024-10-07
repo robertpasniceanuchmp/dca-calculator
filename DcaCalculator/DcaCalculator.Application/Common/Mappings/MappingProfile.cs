@@ -15,11 +15,13 @@ namespace DcaCalculator.Application.Common.Mappings
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.DateAdded))
                 .ForMember(dest => dest.UpdatedDate, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.CoinmarketCapId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Quote.USD.Price));
             CreateMap<Datum, GetAllCryptocurrenciesDto>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Symbol, opt => opt.MapFrom(src => src.Symbol))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.LastUpdated))
+                .ForMember(dest => dest.CoinmarketCapId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Quote.USD.Price));
         }
 

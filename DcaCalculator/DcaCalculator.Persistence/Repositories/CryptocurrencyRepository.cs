@@ -13,12 +13,11 @@ namespace DcaCalculator.Persistence.Repositories
             _repository = repository;
         }
 
-        public async Task<List<Cryptocurrency>> GetCryptocurrencyBySymbolAndDateAsync(string symbol, DateTime date)
+        public async Task<Cryptocurrency> GetCryptocurrencyBySymbolAndDateAsync(string symbol)
         {
-            return 
+            return
                 await _repository.Entities
-                .Where(x => x.Symbol == symbol && x.CreatedDate.Value == date)
-                .ToListAsync();
+                .FirstOrDefaultAsync(x => x.Symbol == symbol);
         }
     }
 }

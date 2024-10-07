@@ -21,9 +21,9 @@ namespace DcaCalculator.Persistence.HttpClients
             return content;
         }
 
-        public async Task<string> GetHistoricalQuotes(string symbols, string startDate)
+        public async Task<string> GetHistoricalQuotes(string symbols, long startDate)
         {
-            var response = await _httpClient.GetAsync($"/v2/cryptocurrency/quotes/historical?symbol={symbols}&interval=30d");
+            var response = await _httpClient.GetAsync($"/v2/cryptocurrency/quotes/historical?id={symbols}&time_start={startDate}&interval=30d");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();

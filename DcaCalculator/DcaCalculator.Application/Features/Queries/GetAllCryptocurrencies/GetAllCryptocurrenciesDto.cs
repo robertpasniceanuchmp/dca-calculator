@@ -9,6 +9,7 @@ namespace DcaCalculator.Application.Features.Queries.GetAllCryptocurrencies
         public string Name { get; set; }
         public string Symbol { get; set; }
         public double Value { get; set; }
+        public long CoinmarketCapId { get; set; }
         public DateTime? CreatedDate { get; set; }
     }
 }
